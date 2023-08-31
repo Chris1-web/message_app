@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import Navigation from "./components/Navigation";
+import Login from "./pages/Login";
 import { createBrowserRouter, RouterProvider, Link } from "react-router-dom";
 import "./index.css";
 
@@ -11,11 +12,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "login",
-        element: (
-          <p>
-            Login Page <Link to="/sign-up">Go to sign up page</Link>{" "}
-          </p>
-        ),
+        element: <Login />,
       },
       {
         path: "sign-up",
