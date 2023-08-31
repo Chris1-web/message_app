@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Merienda:wght@300;400;500;800;900&display=swap"); /* Merienda font */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: "Merienda", cursive;
+}
