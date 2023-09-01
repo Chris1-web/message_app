@@ -5,7 +5,7 @@ import githubLogo from "../assets/github.png";
 export default function Navigation() {
   return (
     <main className="container mx-auto mt-4">
-      <nav className="flex justify-between items-center">
+      <nav className="flex justify-between items-center h-[10vh]">
         <div className="left-navigation flex items-center gap-3">
           <img src={chatLogo} width={40} />
           <p className="text-3xl">MESSAGING APP.</p>
