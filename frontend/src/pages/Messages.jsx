@@ -40,14 +40,14 @@ export default function Messages() {
         </div>
         <div className="middle-container px-3 h-full">
           <div className="w-full flex flex-col gap-2 py-1">
-            <MessageBox />
-            <MessageBox />
-            <MessageBox />
+            <MessageBox side={"right"} />
+            <MessageBox side={"right"} />
+            <MessageBox side={"right"} />
           </div>
           <div className="w-full flex flex-col gap-2 py-1 content-start">
-            <MessageBox />
-            <MessageBox />
-            <MessageBox />
+            <MessageBox side={"left"} />
+            <MessageBox side={"left"} />
+            <MessageBox side={"left"} />
           </div>
         </div>
         <div className="bottom-container">
