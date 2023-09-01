@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import loginLogo from "../assets/loginPageLogo.svg";
+import RightNavLogo from "../components/groupMessageLogo";
 
 export default function Login() {
   return (
@@ -40,14 +40,7 @@ export default function Login() {
           </button>
         </form>
       </div>
-      <div className="right-navigation grid">
-        <img
-          src={loginLogo}
-          alt="group chat"
-          width={"100%"}
-          className="justify-self-end"
-        />
-      </div>
+      <RightNavLogo />
     </div>
   );
 }
