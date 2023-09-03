@@ -1,6 +1,10 @@
 const { body, validationResult } = require("express-validator");
+const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const storage = multer.memoryStorage();
+const verifyToken = require("../verifyToken");
+const upload = multer({ storage });
 
 // model
 const Account = require("../models/account");
@@ -85,6 +89,45 @@ exports.account_login = [
     } catch (error) {
       console.log(error.message);
       return res.status(400).json({ error: { message: error.message } });
+    }
+  },
+];
+
+exports.account_update_post = [
+  verifyToken,
+  body("bio").trim().escape(),
+  upload.single("photo"),
+  async (req, res) => {
+    const { bio } = req.body;
+    // if there is no file, just update bio
+    try {
+      if (!req.file && bio) {
+        const user = {
+          ...req.user,
+          bio,
+        };
+        // update req.user
+        req.user = user;
+        await Account.findOneAndUpdate({ username: req.user.username }, user);
+        return res.json({ user });
+      }
+      // if there is an image file
+      profilePhoto = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+      const user = {
+        ...req.user,
+        bio,
+        photo: profilePhoto,
+      };
+      // update req.user and token
+      req.user = user;
+      await Account.findOneAndUpdate({ username: req.user.username }, user);
+      return res.json({ user });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error });
     }
   },
 ];
