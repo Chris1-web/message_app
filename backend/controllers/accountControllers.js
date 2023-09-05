@@ -88,7 +88,6 @@ exports.account_login = [
       });
       return res.status(200).json({ token });
     } catch (error) {
-      console.log(error.message);
       return res.status(400).json({ error: { message: error.message } });
     }
   },
@@ -112,6 +111,7 @@ exports.account_update_post = [
         await Account.findOneAndUpdate({ username: req.user.username }, user);
         return res.json({ user });
       }
+
       // if there is an image file, create an AccountPhoto model and reference the ID
       const imageObject = {
         url: {
@@ -139,10 +139,22 @@ exports.account_update_post = [
   },
 ];
 
-// exports.account_individual_get = [
-//   verifyToken,
-//   // check account in database
-//   (req, res) => {
-//     console.log(req.params.accountId);
-//   },
-// ];
+exports.account_individual_get = [
+  verifyToken,
+  // check account in database
+  async (req, res) => {
+    const { username } = req.params;
+    try {
+      const user = await Account.findOne({
+        username: username.toLowerCase(),
+      }).select("-password");
+      if (user === null) {
+        //if user is null
+        throw new Error("User not found");
+      }
+      return res.status(200).json({ user });
+    } catch (error) {
+      return res.status(400).json({ error: { message: error.message } });
+    }
+  },
+];
