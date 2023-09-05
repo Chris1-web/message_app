@@ -8,6 +8,7 @@ const upload = multer({ storage });
 
 // model
 const Account = require("../models/account");
+const AccountPhoto = require("../models/accountPhoto");
 
 exports.account_create_post = [
   body("username", "Username is required")
@@ -111,15 +112,21 @@ exports.account_update_post = [
         await Account.findOneAndUpdate({ username: req.user.username }, user);
         return res.json({ user });
       }
-      // if there is an image file
-      profilePhoto = {
-        data: req.file.buffer,
-        contentType: req.file.mimetype,
+      // if there is an image file, create an AccountPhoto model and reference the ID
+      const imageObject = {
+        url: {
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+        },
       };
+      const profilePhoto = new AccountPhoto(imageObject);
+
+      await profilePhoto.save();
+
       const user = {
         ...req.user,
         bio,
-        photo: profilePhoto,
+        photo: profilePhoto._id,
       };
       // update req.user and token
       req.user = user;
@@ -131,3 +138,11 @@ exports.account_update_post = [
     }
   },
 ];
+
+// exports.account_individual_get = [
+//   verifyToken,
+//   // check account in database
+//   (req, res) => {
+//     console.log(req.params.accountId);
+//   },
+// ];
