@@ -9,6 +9,7 @@ const upload = multer({ storage });
 // model
 const Account = require("../models/account");
 const AccountPhoto = require("../models/accountPhoto");
+const Message = require("../models/message");
 
 exports.account_create_post = [
   body("username", "Username is required")
@@ -159,6 +160,21 @@ exports.account_individual_get = [
       return res.status(200).json({ user });
     } catch (error) {
       return res.status(400).json({ error: { message: error.message } });
+    }
+  },
+];
+
+exports.accounts_list = [
+  verifyToken,
+  async (req, res) => {
+    try {
+      const users = await Account.find({})
+        .select("-password")
+        .select("-bio")
+        .select("-joined");
+      return res.status(200).json({ users });
+    } catch (error) {
+      return res.status(400).json({ error });
     }
   },
 ];
