@@ -51,3 +51,28 @@ exports.message_create = [
     }
   },
 ];
+
+exports.messages_get = [
+  verifyToken,
+  async (req, res) => {
+    const { recipientId } = req.params;
+    // get the particular user
+    try {
+      const friend = await Account.findById(recipientId);
+      if (!friend) throw new Error("User does not exist");
+      // get all messages that have the sender as the current user and friend as recipient
+      const messages = await Message.find({
+        sender: req.user._id,
+        recipient: recipientId,
+      });
+      return res.status(400).json({ messages });
+    } catch (error) {
+      return res.status(400).json({ error: { message: error.message } });
+    }
+  },
+];
+
+// exports.message_update = [
+//   verifyToken,
+//   // (req, )
+// ];
