@@ -10,6 +10,7 @@ const upload = multer({ storage });
 const Account = require("../models/account");
 const AccountPhoto = require("../models/accountPhoto");
 const Message = require("../models/message");
+const Picture = require("../models/picture");
 
 exports.account_create_post = [
   body("username", "Username is required")
@@ -18,7 +19,7 @@ exports.account_create_post = [
     .escape()
     .custom(async (value) => {
       const existingUser = await Account.findOne({
-        username: value.toLowerCase(),
+        username: value,
       });
       if (existingUser) {
         throw new Error("Username already exists");
@@ -78,7 +79,7 @@ exports.account_login = [
 
     try {
       // check if user exists in database and password is correct
-      const user = await Account.findOne({ username: username.toLowerCase() });
+      const user = await Account.findOne({ username: username });
       if (!user) throw new Error("User does not exist");
       const passwordCheck = await bcrypt.compare(password, user.password);
       if (!passwordCheck) throw new Error("Incorrect password");
@@ -151,7 +152,7 @@ exports.account_individual_get = [
     const { username } = req.params;
     try {
       const user = await Account.findOne({
-        username: username.toLowerCase(),
+        username,
       }).select("-password");
       if (user === null) {
         //if user is null
@@ -175,6 +176,70 @@ exports.accounts_list = [
       return res.status(200).json({ users });
     } catch (error) {
       return res.status(400).json({ error });
+    }
+  },
+];
+
+exports.message_create = [
+  verifyToken,
+  body("text").trim().escape(),
+  upload.single("picture"),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { recipientId } = req.params;
+    const { text } = req.body;
+    try {
+      // check if user exists in database
+      const recipient = await Account.findOne({ _id: recipientId });
+      console.log({ recipient, recipientId });
+      if (!recipient) throw new Error("User does not exist");
+
+      let messagePicture = null;
+      if (req.file) {
+        imageObject = {
+          url: {
+            data: req.file.buffer,
+            contentType: req.file.mimetype,
+          },
+        };
+        messagePicture = new Picture(imageObject);
+        await messagePicture.save();
+      }
+      // check if file exists
+      const message = new Message({
+        text,
+        sender: req.user._id,
+        recipient: recipientId,
+        image: messagePicture ? messagePicture._id : null,
+      });
+
+      await message.save();
+      return res.status(200).json({ message });
+    } catch (error) {
+      res.status(400).json({ error: { message: error.message } });
+    }
+  },
+];
+
+exports.messages_get = [
+  verifyToken,
+  async (req, res) => {
+    const { accountId } = req.params;
+    // get the particular user
+    try {
+      const friend = await Account.findById(accountId);
+      if (friend === null) throw new Error("User does not exist");
+      // get all messages that have the sender as the current user and friend as recipient
+      const messages = await Message.find({
+        sender: req.user._id,
+        recipient: accountId,
+      });
+      return res.status(400).json({ messages });
+    } catch (error) {
+      return res.status(400).json({ error: { message: error.message } });
     }
   },
 ];
