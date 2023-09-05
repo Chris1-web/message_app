@@ -98,6 +98,10 @@ exports.account_update_post = [
   body("bio").trim().escape(),
   upload.single("photo"),
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const { bio } = req.body;
     // if there is no file, just update bio
     try {

@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const apiRouter = require("./routes/api");
+const messagesRouter = require("./routes/messages");
 const app = express();
 
 // Set up mongoose connection
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/accounts", apiRouter);
+app.use("/messages", messagesRouter);
 
 app.listen(3000, () => {
   console.log("app listen at port 3000");
