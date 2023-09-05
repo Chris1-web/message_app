@@ -89,8 +89,3 @@ exports.message_delete = [
     }
   },
 ];
-
-// exports.message_update = [
-//   verifyToken,
-//   // (req, )
-// ];
