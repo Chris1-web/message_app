@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import RightNavLogo from "../components/groupMessageLogo";
+import Form from "../components/Form";
 
 export default function Login() {
   return (
@@ -8,7 +10,7 @@ export default function Login() {
         <h2 className="text-8xl mb-20">
           Connect with <br /> your friends, <br /> anytime
         </h2>
-        <form className="signup-form flex flex-col gap-9">
+        <Form formClass={"signup-form flex flex-col gap-9"}>
           <div className="username-container flex flex-col gap-1">
             <label htmlFor="username" className="text-2xl">
               Username
@@ -38,7 +40,7 @@ export default function Login() {
           <button className="text-2xl bg-[#6C63FF] w-4/5 py-3 text-white rounded-xl hover:bg-white hover:text-[#6C63FF] border border-[#6C63FF]">
             Log in
           </button>
-        </form>
+        </Form>
       </div>
       <RightNavLogo />
     </div>

@@ -20,11 +20,11 @@ const router = createBrowserRouter([
         path: "sign-up",
         element: <SignUp />,
       },
-      {
-        path: "messages",
-        element: <Messages />,
-      },
     ],
+  },
+  {
+    path: "/messages",
+    element: <Messages />,
   },
 ]);
 
